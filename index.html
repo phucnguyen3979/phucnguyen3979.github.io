@@ -1,0 +1,246 @@
+<!-- index by Phuc Nguyen -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome To My Homepage!</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<!-- Menu điều hướng -->
+<nav>
+    <a href="#" onclick="openModal('homeModal')"><i class="fas fa-home"></i> Home</a>
+    <a href="#" onclick="openModal('aboutModal')"><i class="fas fa-user"></i> About</a>
+    <a href="#" onclick="openModal('projectsModal')"><i class="fas fa-folder"></i> Projects</a>
+    <a href="#" onclick="openModal('contactModal')"><i class="fas fa-envelope"></i> Contact</a>
+</nav>
+
+<!-- Màn hình tải trang -->
+<div id="loader">
+    <h1>Loading</h1>
+    <span id="percentage">0%</span>
+</div>
+
+<!-- Vụ nổ -->
+<div id="explosion" class="explosion" style="display: none;"></div>
+
+<!-- Nội dung chính của trang -->
+<div id="content">
+    <img src="images/phucnguyen.jpg" alt="Avatar" class="avatar">
+
+    <div id="typed-output"></div>
+
+    <div class="social-links">
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+    </div>
+
+    <div class="copyright">
+        &copy; 2024 Phuc Nguyen. All rights reserved.
+    </div>
+
+    <!-- Bong bóng GitHub -->
+    <div class="bubble" style="left: 10%;"><i class="fab fa-github"></i></div>
+    <div class="bubble" style="left: 30%;"><i class="fab fa-github"></i></div>
+    <div class="bubble" style="left: 50%;"><i class="fab fa-github"></i></div>
+    <div class="bubble" style="left: 70%;"><i class="fab fa-github"></i></div>
+    <div class="bubble" style="left: 90%;"><i class="fab fa-github"></i></div>
+</div>
+
+<!-- Modal Popup cho các mục menu -->
+<div id="homeModal" class="modal">
+    <div class="modal-content">
+        <h2>Home</h2>
+        <p>Welcome to my homepage!</p>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<div id="aboutModal" class="modal">
+    <div class="modal-content">
+        <h2>About</h2>
+        <div class="contact-info">
+            <p><i class="fas fa-envelope"></i> Email: <a href="mailto:your-email@example.com">your-email@example.com</a></p>
+            <p><i class="fas fa-phone-alt"></i> Phone: <a href="tel:+1234567890">+1234567890</a></p>
+            <p><i class="fas fa-globe"></i> Website: <a href="https://yourwebsite.com" target="_blank">yourwebsite.com</a></p>
+        </div>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+
+<div id="projectsModal" class="modal">
+    <div class="modal-content">
+        <h2>Projects</h2>
+        <p>Here are some of my projects:</p>
+        <div class="project-links">
+        <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i> Repository</a>
+        <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i> Repository</a>
+        </div>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <h2>Contact</h2>
+        <form id="contact-form">
+            <div>
+                <label for="recipient-name"> Sender Name:</label>
+                <input type="text" id="recipient-name" required>
+            </div>
+            <div>
+                <label for="message">Message:</label>
+                <textarea id="message" rows="4" required></textarea>
+            </div>
+            <button type="submit">Send</button>
+        </form>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+
+<!-- Modal Popup -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h2>Hello!</h2>
+        <p>Now is the time: <span id="current-time"></span></p>
+        <button id="close-modal">OK</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+<script>
+    // Hiệu ứng gõ chữ
+    var typed = new Typed('#typed-output', {
+        strings: [
+            "Hello, I'm [Phuc Nguyen].",
+            "I'm a developer passionate about coding.",
+            "I love working with Lua, Python, and JavaScript."
+        ],
+        typeSpeed: 100,
+        backSpeed: 50,
+        loop: true
+    });
+
+    // Hiệu ứng tải trang bằng %
+    let percentage = document.getElementById('percentage');
+    let loader = document.getElementById('loader');
+    let content = document.getElementById('content');
+    let modal = document.getElementById('modal');
+    let closeModalButton = document.getElementById('close-modal');
+    let explosion = document.getElementById('explosion');
+    let progress = 0;
+
+    function loading() {
+        progress += 1;
+        percentage.innerText = progress + '%';
+
+        // Khi đạt 100%, ẩn màn hình loader và hiển thị nội dung
+        if (progress >= 100) {
+            clearInterval(loadingInterval);
+            loader.style.display = 'none';
+            explosion.style.display = 'block'; // Hiển thị vụ nổ
+
+            // Tạo hiệu ứng vụ nổ
+            setTimeout(() => {
+                explosion.style.display = 'none'; // Ẩn vụ nổ sau khi hoàn thành
+                content.style.display = 'block';
+                document.body.classList.add('loaded');
+                
+                // Lấy thời gian hiện tại và hiển thị trong popup
+                let currentTime = new Date().toLocaleTimeString();
+                document.getElementById('current-time').innerText = currentTime;
+                modal.style.display = 'flex'; // Hiển thị modal
+            }, 500); // Thời gian vụ nổ
+        }
+    }
+
+    // Tạo hiệu ứng tải chậm
+    let loadingInterval = setInterval(loading, 50); // Cập nhật sau mỗi 50ms
+
+    // Đóng modal khi người dùng nhấn nút OK
+    closeModalButton.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Mở modal
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    // Đóng modal
+    function closeModal() {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.style.display = 'none';
+        });
+    }
+    // Hàm tạo bong bóng ngẫu nhiên
+    function createBubbles() {
+        const bubbles = document.querySelectorAll('.bubble');
+        bubbles.forEach(bubble => {
+            const randomDuration = Math.random() * (10 - 5) + 5; // Thời gian bay ngẫu nhiên từ 5 đến 10 giây
+            const randomDelay = Math.random() * 5; // Thời gian trễ ngẫu nhiên
+
+            bubble.style.animationDuration = `${randomDuration}s`;
+            bubble.style.animationDelay = `${randomDelay}s`;
+        });
+    }
+
+    // Gọi hàm tạo bong bóng
+    createBubbles();
+
+    // Hàm tạo ngôi sao ngẫu nhiên
+    function createStars(numStars) {
+        const body = document.body;
+
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 2; // Kích thước ngôi sao ngẫu nhiên từ 2 đến 5px
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}vw`; // Vị trí từ 0 đến 100% chiều rộng
+            star.style.top = `${Math.random() * 100}vh`; // Vị trí từ 0 đến 100% chiều cao
+            
+            body.appendChild(star);
+        }
+    }
+
+    // Gọi hàm tạo ngôi sao
+    createStars(100); // Số lượng ngôi sao
+
+    // Hàm tạo vệt sáng
+    function createComets(numComets) {
+        const body = document.body;
+
+        for (let i = 0; i < numComets; i++) {
+            const comet = document.createElement('div');
+            comet.className = 'comet';
+            comet.style.top = `${Math.random() * 100}vh`; // Vị trí ngẫu nhiên theo chiều cao
+            comet.style.left = `${Math.random() * 100}vw`; // Vị trí ngẫu nhiên theo chiều rộng
+            comet.style.animationDuration = `${Math.random() * 1 + 1}s`; // Thời gian di chuyển ngẫu nhiên từ 1s đến 2s
+            body.appendChild(comet);
+
+            // Xóa comet sau khi animation hoàn thành
+            comet.addEventListener('animationend', () => {
+                comet.remove();
+            });
+        }
+    }
+
+    // Gọi hàm tạo vệt sáng
+    setInterval(() => {
+        createComets(1); // Tạo 1 vệt sáng ngẫu nhiên mỗi giây
+    }, 5000);
+</script>
+
+</body>
+</html>
